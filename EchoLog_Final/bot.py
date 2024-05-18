@@ -19,9 +19,9 @@ def fetch_data(url, num_requests=10, delay_seconds=1):
         time.sleep(delay_seconds)
 
 if __name__ == "__main__":
-    url = 'https://671a-2a09-bac1-3680-8798-00-23-3c0.ngrok-free.app/'
+    url = 'https://cf9f-103-119-242-115.ngrok-free.app/'
     
-    num_requests = 100
+    num_requests = 2
     delay_seconds = 1
     
     fetch_data(url, num_requests, delay_seconds)

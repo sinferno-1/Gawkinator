@@ -13,9 +13,16 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, 'sample.html')));
-app.get('/', async (req, res) => {
+// Serve the HTML file for the root route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'sample.html'));
+});
+
+// Route to log client info
+app.post('/client-info', async (req, res) => {
   try {
+    const clientInfo = req.body;
+
     const ngrokIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     console.log('Ngrok Public IP Address:', ngrokIp);
 
@@ -23,7 +30,6 @@ app.get('/', async (req, res) => {
 
     const ipApiResponse = await axios.get(`http://ip-api.com/json/${ngrokIp}?fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,offset,currency,isp,org,as,asname,reverse,mobile,proxy,hosting,query`);
 
-    
     const timestamp = new Date().toISOString();
     
     console.log('ipApiResponse:', ipApiResponse.data);
@@ -56,6 +62,7 @@ app.get('/', async (req, res) => {
       hosting: ipApiResponse.data.hosting || false,
       bot: false,
       headers: req.headers,
+      clientInfo: clientInfo,
     };
 
     const logFilePath = path.join(__dirname, 'iplog.json');
@@ -65,12 +72,10 @@ app.get('/', async (req, res) => {
     try {
       const fileContent = await fs.readFile(logFilePath, 'utf-8');
       existingLogs = JSON.parse(fileContent);
-     
     } catch (readError) {
       console.error('Error reading iplog.json:', readError);
     }
 
-   
     existingLogs.push(logEntry);
 
     try {
@@ -78,7 +83,6 @@ app.get('/', async (req, res) => {
       console.log('Log entry successfully saved to iplog.json');
     } catch (writeError) {
       console.error('Error writing to iplog.json:', writeError);
-     
     }
 
     res.json({
@@ -90,7 +94,6 @@ app.get('/', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

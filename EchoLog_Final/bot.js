@@ -17,7 +17,7 @@ async function fetchData(url, numRequests = 10, delayMilliseconds = 1000) {
         await new Promise(resolve => setTimeout(resolve, delayMilliseconds));
     }
 }
-const url = 'https://671a-2a09-bac1-3680-8798-00-23-3c0.ngrok-free.app/';   
+const url = 'https://cf9f-103-119-242-115.ngrok-free.app/';   
 
 
 const numRequests = 50;
